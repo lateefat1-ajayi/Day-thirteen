@@ -16,12 +16,15 @@ async function fetchBooksByGenre(genre) {
     return res.data.items
       .filter((item) => item.volumeInfo.title && item.volumeInfo.authors && item.volumeInfo.imageLinks)
       .map((item) => ({
-        title: item.volumeInfo.title,
-        author: item.volumeInfo.authors[0],
-        description: item.volumeInfo.description || "No description available.",
-        coverUrl: item.volumeInfo.imageLinks.thumbnail || "",
-        genre,
-      }));
+  title: item.volumeInfo.title,
+  author: item.volumeInfo.authors[0],
+  description: item.volumeInfo.description || "No description available.",
+  coverUrl: item.volumeInfo.imageLinks?.thumbnail
+    ? item.volumeInfo.imageLinks.thumbnail.replace(/^http:\/\//i, 'https://')
+    : "",
+  genre,
+}));
+
   } catch (err) {
     console.error(`❌ Failed to fetch for genre: ${genre}`, err.message);
     return [];
