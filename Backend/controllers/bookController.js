@@ -47,10 +47,19 @@ exports.deleteBook = async (req, res) => {
 
 exports.getBookById = async (req, res) => {
   try {
+    console.log("Looking for book with ID:", req.params.id); 
+
     const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    if (!book) {
+      console.log("Book not found in DB"); 
+      return res.status(404).json({ message: "Book not found" });
+    }
+
     res.json(book);
   } catch (err) {
+    console.error("Error in getBookById:", err.message); 
     res.status(500).json({ message: "Failed to fetch book" });
   }
 };
+
