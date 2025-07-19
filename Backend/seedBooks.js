@@ -15,16 +15,20 @@ async function fetchBooksByGenre(genre) {
 
     return res.data.items
       .filter((item) => item.volumeInfo.title && item.volumeInfo.authors && item.volumeInfo.imageLinks)
-      .map((item) => ({
-  title: item.volumeInfo.title,
-  author: item.volumeInfo.authors[0],
-  description: item.volumeInfo.description || "No description available.",
-  coverUrl: item.volumeInfo.imageLinks?.thumbnail
-    ? item.volumeInfo.imageLinks.thumbnail.replace(/^http:\/\//i, "https://")
-    : "https://via.placeholder.com/300x400?text=No+Cover",
-  genre,
-  addedBy: "seed-script", // 🔥 This is required to satisfy your schema
-}));
+      .map((item) => {
+  const thumbnail = item.volumeInfo.imageLinks?.thumbnail;
+
+  return {
+    title: item.volumeInfo.title,
+    author: item.volumeInfo.authors[0],
+    description: item.volumeInfo.description || "No description available.",
+    coverUrl: thumbnail
+      ? thumbnail.replace(/^http:\/\//i, "https://")
+      : "https://via.placeholder.com/300x400?text=No+Cover",
+    genre,
+    addedBy: "seed-script",
+  };
+});
 
 
   } catch (err) {
