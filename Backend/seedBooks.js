@@ -23,10 +23,10 @@ async function fetchBooksByGenre(genre) {
     author: item.volumeInfo.authors[0],
     description: item.volumeInfo.description || "No description available.",
     coverUrl: thumbnail
-      ? thumbnail.replace(/^http:\/\//i, "https://")
-      : "https://via.placeholder.com/300x400?text=No+Cover",
+  ? thumbnail.replace(/^http:\/\//i, "https://")
+  : "https://placehold.co/300x400?text=No+Cover&font=roboto",
     genre,
-    addedBy: "seed-script",
+   
   };
 });
 

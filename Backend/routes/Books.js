@@ -1,13 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const { addBook, getAllBooks } = require("../controllers/bookController");
+const {
+  addBook,
+  getAllBooks,
+  getBookById,
+  deleteBook,
+} = require("../controllers/bookController");
 const auth = require("../middleware/auth");
 const isAdmin = require("../middleware/isAdmin");
 
-// Public
+
 router.get("/", getAllBooks);
+router.get("/:id", getBookById); 
 
-// Admin-only
+// Admin routes
 router.post("/", auth, isAdmin, addBook);
-
+router.delete("/:id", auth, isAdmin, deleteBook); 
 module.exports = router;
