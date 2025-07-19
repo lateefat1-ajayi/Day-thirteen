@@ -55,7 +55,7 @@ const Reader = () => {
         />
 
         <div className="prose dark:prose-invert max-w-none">
-          {/* Replace this with real content later */}
+          
           <p>{book.content || "This book has no content yet. Please check back later."}</p>
         </div>
       </div>

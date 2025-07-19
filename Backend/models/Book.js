@@ -5,7 +5,8 @@ const bookSchema = new mongoose.Schema(
     title: { type: String, required: true },
     author: { type: String, required: true },
     description: String,
-    coverImage: String, // URL string
+    coverUrl: String,
+    content: String, 
     addedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
