@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 const BookCard = ({ book }) => {
+    console.log("Cover URL:", book.coverUrl);
   return (
     <Link to={`/reader/${book._id}`} className="block">
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300">

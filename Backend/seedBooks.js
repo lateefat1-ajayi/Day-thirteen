@@ -20,10 +20,12 @@ async function fetchBooksByGenre(genre) {
   author: item.volumeInfo.authors[0],
   description: item.volumeInfo.description || "No description available.",
   coverUrl: item.volumeInfo.imageLinks?.thumbnail
-    ? item.volumeInfo.imageLinks.thumbnail.replace(/^http:\/\//i, 'https://')
-    : "",
+    ? item.volumeInfo.imageLinks.thumbnail.replace(/^http:\/\//i, "https://")
+    : "https://via.placeholder.com/300x400?text=No+Cover",
   genre,
+  addedBy: "seed-script", // 🔥 This is required to satisfy your schema
 }));
+
 
   } catch (err) {
     console.error(`❌ Failed to fetch for genre: ${genre}`, err.message);
@@ -50,6 +52,7 @@ async function seedBooks() {
     }
 
     await Book.deleteMany({});
+    console.log("First book sample:", allBooks[0]);
     await Book.insertMany(allBooks);
     console.log(`✅ Inserted ${allBooks.length} books into database.`);
 
