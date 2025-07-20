@@ -1,20 +1,31 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() =>
-    JSON.parse(localStorage.getItem("bookbin-user"))
-  );
+  const [user, setUser] = useState(null);
 
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
+    if (token && userData) {
+      setUser({ token, ...JSON.parse(userData) });
+    }
+  }, []);
+
+  
   const loginUser = (data) => {
-    setUser(data);
-    localStorage.setItem("bookbin-user", JSON.stringify(data));
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    setUser({ token: data.token, ...data.user });
   };
 
+
   const logoutUser = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
-    localStorage.removeItem("bookbin-user");
   };
 
   return (

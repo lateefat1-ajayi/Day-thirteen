@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Navbar from "./components/NavBar";
 import Welcome from "./pages/Welcome";
 import BookList from "./pages/BookList";
+import BookFormPage from "./pages/BookFormPage";
 
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/" element={<Welcome />} />
-        <Route path="/books" element={<BookList />} />
+        <Route path="/add-book" element={<BookFormPage />} />
+        <Route path="/book-list" element={<BookList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

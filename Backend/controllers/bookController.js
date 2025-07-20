@@ -6,17 +6,33 @@ exports.getBooks = async (req, res) => {
 };
 
 exports.addBook = async (req, res) => {
-  const { title, author, genre, status, notes } = req.body;
-  const book = await Book.create({
-    user: req.user.id,
-    title,
-    author,
-    genre,
-    status,
-    notes
-  });
-  res.status(201).json(book);
+  try {
+    const { title, author, genre, status, notes } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ msg: "Title is required" });
+    }
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ msg: "Unauthorized: No user found" });
+    }
+
+    const book = await Book.create({
+      user: req.user.id,
+      title,
+      author,
+      genre,
+      status,
+      notes,
+    });
+
+    res.status(201).json(book);
+  } catch (error) {
+    console.error("Error adding book:", error);
+    res.status(500).json({ msg: "Server error adding book" });
+  }
 };
+
 
 exports.updateBook = async (req, res) => {
   const book = await Book.findById(req.params.id);

@@ -11,19 +11,16 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await api.post("/users/login", form);
-      loginUser(res.data);
-      toast.success("Logged in!");
-      navigate("/");
-    } catch (err) {
-      toast.error(err.response?.data?.msg || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await api.post("/users/login", form);
+    loginUser(res.data);  
+    toast.success("Logged in!");
+    setTimeout(() => navigate("/book-list"), 100);
+  } catch (err) {
+    toast.error(err.response?.data?.msg || "Login failed");
+  }
+};
 
   return (
     <div className="max-w-md mx-auto mt-20 px-6 py-8 bg-white shadow-lg rounded-md">
@@ -58,7 +55,7 @@ const Login = () => {
         </button>
 
         <p className="text-sm text-center mt-2">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">
             Register
           </Link>
