@@ -1,34 +1,26 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (token && userData && userData !== "undefined") {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setUser({ token, ...parsedUser });
-      } catch (error) {
-        console.error("Failed to parse user data:", error);
-        localStorage.removeItem("user");
-        setUser(null);
-      }
+export const AuthProvider = ({ children }) => {
+  let initialUser = null;
+  try {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser && storedUser !== "undefined") {
+      initialUser = JSON.parse(storedUser);
     }
-  }, []);
+  } catch (err) {
+    console.error("Error reading user from localStorage", err);
+  }
 
-  const loginUser = (data) => {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    setUser({ token: data.token, ...data.user });
+  const [user, setUser] = useState(initialUser);
+
+  const loginUser = (userData) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
   };
@@ -39,7 +31,3 @@ const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-const useAuth = () => useContext(AuthContext);
-
-export { AuthProvider, useAuth };
