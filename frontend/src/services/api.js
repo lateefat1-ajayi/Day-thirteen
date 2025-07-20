@@ -14,3 +14,9 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+
+export const addBook = (bookData) => api.post("/books", bookData);
+export const getBooks = () => api.get("/books");
+export const updateBook = (id, bookData) => api.put(`/books/${id}`, bookData);
+export const deleteBook = (id) => api.delete(`/books/${id}`);

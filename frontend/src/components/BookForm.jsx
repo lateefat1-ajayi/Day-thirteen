@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
-
+import { toast } from "react-toastify";
 
 const BookForm = () => {
+  const { id } = useParams(); // for edit mode
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     title: "",
     author: "",
@@ -12,75 +15,100 @@ const BookForm = () => {
     notes: "",
   });
 
+  const isEditMode = Boolean(id);
 
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchBook = async () => {
+        try {
+          const res = await api.get(`/books/${id}`);
+          setForm(res.data);
+        } catch (err) {
+          toast.error("Failed to load book for editing");
+        }
+      };
+
+      fetchBook();
+    }
+  }, [id]);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const token = localStorage.getItem("token");
-  console.log("Submitting book with token:", token);
-  if (!token) {
-    toast.error("No authorization token found. Please login again.");
-    return;
-  }
-  try {
-    await api.post("/books", form, {
-  headers: { Authorization: `Bearer ${token}` }
-});
-    toast.success("Book added!");
-  } catch (err) {
-    console.error("Book submission error:", err);
-    toast.error(err.response?.data?.msg || "Failed to add book");
-  }
-};
+    e.preventDefault();
 
+    try {
+      if (isEditMode) {
+        await api.put(`/books/${id}`, form);
+        toast.success("Book updated");
+      } else {
+        await api.post("/books", form);
+        toast.success("Book added");
+      }
+      navigate("/book-list");
+    } catch (err) {
+      toast.error("Error saving book");
+    }
+  };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Add a New Book</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="p-4 bg-gray-100 min-h-screen">
+      <h2 className="text-2xl font-bold mb-4">
+        {isEditMode ? "Edit Book" : "Add Book"}
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded shadow">
         <input
           type="text"
-          placeholder="Title"
+          name="title"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={handleChange}
+          placeholder="Title"
+          className="w-full border p-2 rounded"
           required
-          className="w-full border border-gray-300 rounded px-4 py-2"
         />
         <input
           type="text"
-          placeholder="Author"
+          name="author"
           value={form.author}
-          onChange={(e) => setForm({ ...form, author: e.target.value })}
-          className="w-full border border-gray-300 rounded px-4 py-2"
+          onChange={handleChange}
+          placeholder="Author"
+          className="w-full border p-2 rounded"
+          required
         />
         <input
           type="text"
-          placeholder="Genre"
+          name="genre"
           value={form.genre}
-          onChange={(e) => setForm({ ...form, genre: e.target.value })}
-          className="w-full border border-gray-300 rounded px-4 py-2"
+          onChange={handleChange}
+          placeholder="Genre"
+          className="w-full border p-2 rounded"
         />
         <select
+          name="status"
           value={form.status}
-          onChange={(e) => setForm({ ...form, status: e.target.value })}
-          className="w-full border border-gray-300 rounded px-4 py-2"
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
         >
-          <option value="">Reading status</option>
-          <option value="Want to Read">Want to Read</option>
-          <option value="Currently Reading">Currently Reading</option>
-          <option value="Finished">Finished</option>
+          <option value="">Select Status</option>
+          <option value="Reading">Reading</option>
+          <option value="Completed">Completed</option>
+          <option value="Wishlist">Wishlist</option>
         </select>
         <textarea
-          placeholder="Notes"
+          name="notes"
           value={form.notes}
-          onChange={(e) => setForm({ ...form, notes: e.target.value })}
-          className="w-full border border-gray-300 rounded px-4 py-2"
+          onChange={handleChange}
+          placeholder="Notes"
+          className="w-full border p-2 rounded"
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Add Book
+          {isEditMode ? "Update Book" : "Add Book"}
         </button>
       </form>
     </div>
