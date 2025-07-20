@@ -94,14 +94,9 @@ const Home = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center mb-6">
         <h1 className="text-3xl font-bold">📚 BookBin</h1>
-        <button
-          onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+        
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-3 mb-6">
