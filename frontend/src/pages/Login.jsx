@@ -1,56 +1,53 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 
 const Login = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const { loginUser } = useAuth();
   const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/users/login", form, {
-        withCredentials: true,
-      });
-      console.log(res.data); // or set token in context/localStorage
-      navigate("/library");
+      const res = await api.post("/users/login", form);
+      loginUser(res.data);
+      toast.success("Logged in!");
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.msg || "Login failed");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Login to BookBin</h2>
-      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-      <form onSubmit={handleLogin} className="space-y-4">
+    <div className="max-w-sm mx-auto p-6 mt-10 bg-white rounded shadow">
+      <h1 className="text-2xl font-bold mb-4">Login</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
           placeholder="Email"
+          className="w-full p-2 border rounded"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
           required
-          className="w-full p-2 rounded border dark:bg-gray-800"
         />
         <input
           type="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
           placeholder="Password"
+          className="w-full p-2 border rounded"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           required
-          className="w-full p-2 rounded border dark:bg-gray-800"
         />
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <button className="bg-blue-600 text-white py-2 px-4 rounded w-full">
           Login
         </button>
       </form>
+      <p className="text-sm mt-3 text-center">
+        Don’t have an account? <a href="/register" className="text-blue-600">Register</a>
+      </p>
     </div>
   );
 };

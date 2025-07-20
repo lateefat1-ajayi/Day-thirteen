@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
@@ -7,22 +7,21 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("bookbin-user"))
   );
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("bookbin-user", JSON.stringify(userData));
+  const loginUser = (data) => {
+    setUser(data);
+    localStorage.setItem("bookbin-user", JSON.stringify(data));
   };
 
-  const logout = () => {
+  const logoutUser = () => {
     setUser(null);
     localStorage.removeItem("bookbin-user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loginUser, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook
 export const useAuth = () => useContext(AuthContext);

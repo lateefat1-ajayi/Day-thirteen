@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const API = axios.create({
+const api = axios.create({
   baseURL: "https://day-thirteen.onrender.com",
-  withCredentials: true,
+  withCredentials: false, // CORS enabled on backend
 });
 
-export default API;
+export default api;
